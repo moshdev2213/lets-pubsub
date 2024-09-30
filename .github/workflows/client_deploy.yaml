@@ -9,10 +9,10 @@ env:
   PROJECT_ID: "${{ secrets.PROJECT_ID }}"
   GCR_REGION: "${{ secrets.GCR_REGION }}"
   CLIENT_GCR_SERVICE: "${{ secrets.CLIENT_GCR_SERVICE }}"
-  CLIENT_IMAGE_NAME: "${{ var.CLIENT_IMAGE_NAME }}"
+  CLIENT_IMAGE_NAME: "${{ vars.CLIENT_IMAGE_NAME }}"
   GAR_NAME: "${{ secrets.GAR_NAME }}"
   GAR_REGION: "${{ secrets.GAR_REGION }}"
-  VITE_API_BASE_URL: "${{ var.GAR_REGION }}"
+  VITE_API_BASE_URL: "${{ vars.GAR_REGION }}"
 
 jobs:
   deploy:
