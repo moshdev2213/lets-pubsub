@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors(corsConfig));
 
 app.get("/", async (req, res) => {
-  res.status(200).json({ 'message': 'server online' });
+  res.status(200).json({ 'message': 'Server Online' });
 })
 
 app.post('/publish', async (req, res) => {
