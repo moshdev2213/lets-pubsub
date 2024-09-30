@@ -41,7 +41,7 @@ jobs:
 
       - name: "Build and Push To GAR"
         run: |-
-          DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.CLIENT_IMAGE_NAME }}/${{ env.GCR_SERVICE }}:${{ github.sha }}"
+          DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.CLIENT_IMAGE_NAME }}:${{ github.sha }}"
           docker build --tag "${DOCKER_TAG}" --build-arg VITE_API_BASE_URL="$VITE_API_BASE_URL" ./client
           docker push "${DOCKER_TAG}"
 
@@ -49,7 +49,7 @@ jobs:
         run: |
           echo SERVICE_NAME ${{ env.CLIENT_GCR_SERVICE }}
           gcloud run deploy ${{ env.CLIENT_GCR_SERVICE }} \
-            --image ${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.CLIENT_IMAGE_NAME }}/${{ env.CLIENT_GCR_SERVICE }}:${{ github.sha }} \
+            --image ${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.GAR_NAME }}/${{ env.CLIENT_IMAGE_NAME }}:${{ github.sha }} \
             --platform managed \
             --region ${{ env.GCR_REGION }} \
             --port 5757 \
