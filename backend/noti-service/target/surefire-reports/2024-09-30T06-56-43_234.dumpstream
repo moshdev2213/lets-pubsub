@@ -1,0 +1,5 @@
+# Created at 2024-09-30T06:56:43.454
+Boot Manifest-JAR contains absolute paths in classpath 'E:\1.SLIIT\Year_4\projects\lets-pubsub\backend\noti-service\target\test-classes'
+Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
+'other' has different root
+

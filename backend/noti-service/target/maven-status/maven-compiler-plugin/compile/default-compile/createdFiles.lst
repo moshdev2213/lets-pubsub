@@ -1,0 +1,3 @@
+com\learn\pubsub\controller\Api.class
+com\learn\pubsub\PubsubApplication.class
+com\learn\pubsub\MsgReceiver.class
