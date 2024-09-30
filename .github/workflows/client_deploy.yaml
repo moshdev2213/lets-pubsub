@@ -42,7 +42,7 @@ jobs:
       - name: "Build and Push To GAR"
         run: |-
           DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.CLIENT_IMAGE_NAME }}/${{ env.GCR_SERVICE }}:${{ github.sha }}"
-          docker build --tag "${DOCKER_TAG}" --build-arg VITE_API_BASE_URL="${env.VITE_API_BASE_URL}" ./client
+          docker build --tag "${DOCKER_TAG}" --build-arg VITE_API_BASE_URL="$VITE_API_BASE_URL" ./client
           docker push "${DOCKER_TAG}"
 
       - name: Deploy to Cloud Run
