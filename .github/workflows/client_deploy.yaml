@@ -1,0 +1,60 @@
+name: "Build and Delpoy Client to Cloud Run"
+
+on:
+  push:
+    branches:
+      - "master"
+
+env:
+  PROJECT_ID: "${{ secrets.PROJECT_ID }}"
+  GCR_REGION: "${{ secrets.GCR_REGION }}"
+  CLIENT_GCR_SERVICE: "${{ secrets.CLIENT_GCR_SERVICE }}"
+  CLIENT_IMAGE_NAME: "${{ var.CLIENT_IMAGE_NAME }}"
+  GAR_NAME: "${{ secrets.GAR_NAME }}"
+  GAR_REGION: "${{ secrets.GAR_REGION }}"
+  VITE_API_BASE_URL: "${{ var.GAR_REGION }}"
+
+jobs:
+  deploy:
+    runs-on: "ubuntu-latest"
+
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    steps:
+      - name: "Checkout Repo"
+        uses: "actions/checkout@v4"
+
+      - name: "Authenticate to GCP"
+        id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDS }}"
+
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v2"
+
+      - name: "Docker Auth To GAR"
+        run: |
+          gcloud auth configure-docker "${{env.GAR_REGION}}-docker.pkg.dev"
+
+      - name: "Build and Push To GAR"
+        run: |-
+          DOCKER_TAG="${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.CLIENT_IMAGE_NAME }}/${{ env.GCR_SERVICE }}:${{ github.sha }}"
+          docker build --tag "${DOCKER_TAG}"" --build-arg VITE_API_BASE_URL="${env.VITE_API_BASE_URL}" ./client
+          docker push "${DOCKER_TAG}"
+
+      - name: Deploy to Cloud Run
+        run: |
+          echo SERVICE_NAME ${{ env.CLIENT_GCR_SERVICE }}
+          gcloud run deploy ${{ env.CLIENT_GCR_SERVICE }} \
+            --image ${{ env.GAR_REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.CLIENT_IMAGE_NAME }}/${{ env.CLIENT_GCR_SERVICE }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.GCR_REGION }} \
+            --port 5757 \
+            --allow-unauthenticated
+
+      - name: "Show output"
+        run: |2-
+          echo ${{ steps.deploy.outputs.url }}
